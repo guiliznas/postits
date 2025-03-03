@@ -25,21 +25,28 @@ async function loadContent(path) {
   }
 }
 
-async function saveContent(path, content) {
+let timeoutSave = null;
+function saveContent(path, content) {
   try {
-    await fetch(`/api/notes/${path}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain",
-      },
-      body: content,
-    });
+    clearTimeout(timeoutSave);
+    timeoutSave = setTimeout(async () => {
+      await fetch(`/api/notes/${path}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
+        body: content,
+      });
+    }, 500);
   } catch (error) {
     console.error("Erro ao salvar:", error);
   }
 }
 
 function createCopyLink() {
+  if (readMode) {
+    return;
+  }
   const link = document.createElement("a");
   link.href = "#";
   link.textContent = "Compartilhar";
@@ -49,7 +56,7 @@ function createCopyLink() {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     navigator.clipboard
-      .writeText(window.location.href)
+      .writeText(`${window.location.href}?read=true`)
       .then(() => {
         const originalText = link.textContent;
         link.textContent = "URL copiada!";
