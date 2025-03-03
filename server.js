@@ -41,6 +41,7 @@ app.post("/api/notes/*", async (req, res) => {
   try {
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, req.body);
+    console.log("salvo com sucesso");
     res.send("Salvo com sucesso");
   } catch (error) {
     res.status(500).send("Erro ao salvar");
