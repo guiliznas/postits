@@ -7,7 +7,7 @@ const port = process.env.PORT || 8080;
 const NOTES_DIR = "notes";
 
 app.use(express.text());
-app.use(express.static("."));
+app.use(express.static("public"));
 
 // Cria o diretório notes se não existir
 async function ensureNotesDir() {
@@ -20,6 +20,7 @@ async function ensureNotesDir() {
 
 app.get("/api/notes/*", async (req, res) => {
   const notePath = req.params[0];
+  console.log("lendo nota", notePath);
   const filePath = path.join(NOTES_DIR, `${notePath}.txt`);
 
   try {
@@ -36,6 +37,7 @@ app.get("/api/notes/*", async (req, res) => {
 
 app.post("/api/notes/*", async (req, res) => {
   const notePath = req.params[0];
+  console.log("salvando nota", notePath);
   const filePath = path.join(NOTES_DIR, `${notePath}.txt`);
 
   try {
@@ -54,7 +56,8 @@ app.get("/ping", (req, res) => {
 
 // Adicionar esta rota catch-all para servir o index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  console.log("acessando servidor", req.path);
+  res.sendFile("index.html", { root: path.join(__dirname, "public") });
 });
 
 async function start() {
@@ -65,3 +68,5 @@ async function start() {
 }
 
 start();
+
+module.exports = app;
