@@ -2,7 +2,7 @@ const express = require("express");
 const fs = require("fs").promises;
 const path = require("path");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 8080;
 
 const NOTES_DIR = "notes";
 
@@ -46,6 +46,10 @@ app.post("/api/notes/*", async (req, res) => {
   } catch (error) {
     res.status(500).send("Erro ao salvar");
   }
+});
+
+app.get("/ping", (req, res) => {
+  res.send("pong");
 });
 
 // Adicionar esta rota catch-all para servir o index.html
